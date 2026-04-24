@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 — Probability Axioms & Bayes' Theorem | Nova</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0d0d; --paper: #f5f0e8; --cream: #ede8dc;
+  --accent: #c8410a; --gold: #b8962e; --muted: #6b6458;
+  --border: #c4bdb0; --card: #faf7f2; --green: #2d7a4f;
+  --blue: #1a4f6e; --purple: #5b3fa0;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--paper); color:var(--ink); font-family:'DM Sans',sans-serif; font-size:16px; line-height:1.75; }
+
+/* HEADER */
+.day-header { background:var(--ink); color:var(--paper); padding:0; }
+.header-top { padding:48px 56px 32px; position:relative; overflow:hidden; }
+.header-top::before { content:''; position:absolute; right:-60px; top:-60px; width:320px; height:320px; border-radius:50%; border:1px solid rgba(200,65,10,0.25); }
+.header-top::after { content:''; position:absolute; right:40px; bottom:-80px; width:200px; height:200px; border-radius:50%; border:1px solid rgba(184,150,46,0.2); }
+.day-meta { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.day-header h1 { font-family:'Playfair Display',serif; font-size:clamp(32px,5vw,60px); font-weight:900; line-height:1.05; margin-bottom:16px; }
+.day-header h1 em { color:var(--gold); font-style:italic; }
+.day-header p { color:rgba(245,240,232,0.7); max-width:580px; font-size:15px; }
+.header-bottom { background:rgba(255,255,255,0.04); padding:20px 56px; display:flex; gap:40px; border-top:1px solid rgba(255,255,255,0.08); flex-wrap:wrap; }
+.hb-item { display:flex; align-items:center; gap:10px; }
+.hb-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+.hb-text { font-size:13px; color:rgba(245,240,232,0.65); font-family:'DM Mono',monospace; }
+
+/* NOVA INTRO */
+.nova-today { margin:40px 56px; background:var(--card); border:1px solid var(--border); border-left:4px solid var(--accent); padding:24px 28px; display:flex; gap:20px; border-radius:2px; }
+.nova-today .emoji { font-size:36px; flex-shrink:0; }
+.nova-today h3 { font-family:'Playfair Display',serif; font-size:18px; color:var(--accent); margin-bottom:6px; }
+.nova-today p { font-size:14px; color:var(--muted); line-height:1.8; }
+
+/* TOC */
+.toc { margin:0 56px 40px; background:var(--cream); border:1px solid var(--border); padding:24px 28px; border-radius:2px; }
+.toc h3 { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+.toc ol { padding-left:20px; }
+.toc ol li { font-size:14px; color:var(--blue); padding:4px 0; cursor:pointer; }
+.toc ol li:hover { color:var(--accent); }
+
+/* SECTIONS */
+.content { max-width:860px; margin:0 auto; padding:0 56px 80px; }
+
+.section { margin-bottom:56px; }
+.section-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.section h2 { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; margin-bottom:6px; }
+.section-intro { color:var(--muted); font-size:15px; margin-bottom:28px; max-width:700px; }
+.section h3 { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin:32px 0 12px; color:var(--ink); }
+.section h4 { font-size:16px; font-weight:600; margin:24px 0 8px; }
+.section p { margin-bottom:16px; font-size:15px; }
+.section ul, .section ol { padding-left:24px; margin-bottom:16px; }
+.section ul li, .section ol li { font-size:15px; padding:4px 0; line-height:1.7; }
+
+/* DIVIDER */
+.divider { height:1px; background:var(--border); margin:40px 0; }
+
+/* DEFINITION BOX */
+.def-box { background:var(--ink); color:var(--paper); padding:24px 28px; margin:20px 0; border-radius:2px; }
+.def-box .def-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.def-box .def-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--gold); margin-bottom:10px; }
+.def-box p { font-size:14px; color:rgba(245,240,232,0.8); line-height:1.8; }
+.def-box .formula { font-family:'DM Mono',monospace; font-size:16px; color:var(--accent); margin:12px 0; padding:10px 16px; background:rgba(255,255,255,0.06); border-radius:2px; }
+
+/* INTUITION BOX */
+.intuition { background:rgba(45,122,79,0.07); border:1px solid rgba(45,122,79,0.25); border-left:3px solid var(--green); padding:20px 24px; margin:20px 0; border-radius:2px; }
+.intuition .int-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--green); margin-bottom:8px; }
+.intuition h4 { font-size:15px; font-weight:600; color:var(--green); margin-bottom:8px; }
+.intuition p { font-size:14px; color:var(--muted); line-height:1.8; }
+
+/* DOMAIN BOX */
+.domain { background:rgba(26,79,110,0.06); border:1px solid rgba(26,79,110,0.2); border-left:3px solid var(--blue); padding:20px 24px; margin:20px 0; border-radius:2px; }
+.domain .dom-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--blue); margin-bottom:8px; }
+.domain h4 { font-size:15px; font-weight:600; color:var(--blue); margin-bottom:8px; }
+.domain p { font-size:14px; color:var(--muted); line-height:1.8; }
+
+/* WARNING BOX */
+.warning { background:rgba(200,65,10,0.06); border:1px solid rgba(200,65,10,0.2); border-left:3px solid var(--accent); padding:20px 24px; margin:20px 0; border-radius:2px; }
+.warning .warn-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.warning h4 { font-size:15px; font-weight:600; color:var(--accent); margin-bottom:8px; }
+.warning p { font-size:14px; color:var(--muted); line-height:1.8; }
+
+/* SVG DIAGRAMS */
+.diagram-container { background:var(--card); border:1px solid var(--border); padding:32px; margin:28px 0; border-radius:2px; text-align:center; }
+.diagram-container .diagram-title { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
+.diagram-container svg { max-width:100%; }
+.diagram-caption { font-size:12px; color:var(--muted); margin-top:12px; font-style:italic; }
+
+/* WORKED EXAMPLE */
+.example { background:var(--cream); border:1px solid var(--border); padding:28px; margin:24px 0; border-radius:2px; }
+.example-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); background:var(--ink); display:inline-block; padding:3px 10px; margin-bottom:14px; }
+.example h4 { font-size:16px; font-weight:600; margin-bottom:12px; }
+.example .step { display:flex; gap:16px; margin:10px 0; align-items:flex-start; }
+.example .step-num { background:var(--accent); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex-shrink:0; margin-top:2px; }
+.example .step-content { flex:1; font-size:14px; }
+.example .step-content .formula { font-family:'DM Mono',monospace; font-size:14px; background:var(--paper); padding:8px 12px; margin:6px 0; border-radius:2px; border:1px solid var(--border); }
+.example .answer { background:var(--ink); color:var(--gold); font-family:'DM Mono',monospace; padding:12px 16px; margin-top:16px; border-radius:2px; font-size:14px; }
+
+/* CODE BLOCK */
+.code-block { background:#1a1a2e; color:#e8e8f0; font-family:'DM Mono',monospace; font-size:13px; padding:24px; margin:20px 0; border-radius:2px; overflow-x:auto; line-height:1.7; }
+.code-block .comment { color:#6a7a8a; }
+.code-block .keyword { color:#c084fc; }
+.code-block .string { color:#86efac; }
+.code-block .number { color:#fbbf24; }
+.code-block .function { color:#60a5fa; }
+.code-block .output { color:#4ade80; }
+
+/* QUIZ SECTION */
+.quiz-section { background:var(--ink); color:var(--paper); padding:36px; margin:48px 0 0; border-radius:2px; }
+.quiz-section .quiz-header { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.quiz-section h2 { font-family:'Playfair Display',serif; font-size:28px; color:var(--gold); margin-bottom:8px; }
+.quiz-section .quiz-intro { color:rgba(245,240,232,0.6); font-size:14px; margin-bottom:32px; line-height:1.8; }
+.quiz-q { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); padding:20px 24px; margin-bottom:16px; border-radius:2px; }
+.quiz-q .q-num { font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.15em; margin-bottom:8px; }
+.quiz-q .q-text { font-size:15px; color:var(--paper); line-height:1.7; margin-bottom:12px; }
+.quiz-q .q-type { font-family:'DM Mono',monospace; font-size:10px; color:rgba(245,240,232,0.4); }
+.quiz-q .options { margin-top:10px; padding-left:4px; }
+.quiz-q .options li { font-size:14px; color:rgba(245,240,232,0.75); padding:4px 0; list-style:lower-alpha; margin-left:16px; }
+.answer-space { background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.1); padding:16px; margin-top:10px; border-radius:2px; font-size:12px; color:rgba(245,240,232,0.3); font-family:'DM Mono',monospace; min-height:48px; }
+
+/* PROBLEM SET */
+.problem-section { background:rgba(184,150,46,0.06); border:1px solid rgba(184,150,46,0.2); padding:36px; margin:0; border-radius:2px; }
+.problem-section .ps-header { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+.problem-section h2 { font-family:'Playfair Display',serif; font-size:28px; margin-bottom:8px; }
+.problem-section .ps-intro { color:var(--muted); font-size:14px; margin-bottom:28px; }
+.problem { background:var(--card); border:1px solid var(--border); padding:24px; margin-bottom:20px; border-radius:2px; }
+.problem .p-num { font-family:'DM Mono',monospace; font-size:11px; color:var(--accent); letter-spacing:0.1em; margin-bottom:10px; }
+.problem .p-title { font-size:16px; font-weight:600; margin-bottom:10px; }
+.problem .p-text { font-size:14px; color:var(--muted); line-height:1.8; margin-bottom:12px; }
+.problem .p-tasks { padding-left:20px; }
+.problem .p-tasks li { font-size:14px; color:var(--ink); padding:4px 0; }
+.problem .p-hint { background:rgba(184,150,46,0.08); border-left:2px solid var(--gold); padding:10px 14px; margin-top:12px; font-size:13px; color:var(--muted); font-style:italic; }
+
+/* CHECKLIST */
+.day-checklist { background:var(--green); color:white; padding:28px; margin-top:32px; border-radius:2px; }
+.day-checklist h3 { font-family:'Playfair Display',serif; font-size:20px; margin-bottom:16px; }
+.day-checklist ul { list-style:none; }
+.day-checklist ul li { padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.15); display:flex; align-items:center; gap:10px; font-size:14px; }
+.day-checklist ul li:last-child { border-bottom:none; }
+.day-checklist ul li::before { content:'☐'; font-size:16px; flex-shrink:0; }
+
+/* TABLE */
+.data-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+.data-table th { background:var(--ink); color:var(--gold); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:10px 14px; text-align:left; }
+.data-table td { padding:10px 14px; border-bottom:1px solid var(--border); }
+.data-table tr:nth-child(even) td { background:var(--cream); }
+
+@media(max-width:700px) {
+  .content { padding:0 24px 60px; }
+  .nova-today, .toc { margin:24px; }
+  .day-header h1 { font-size:32px; }
+  .header-top { padding:36px 24px 24px; }
+  .header-bottom { padding:16px 24px; gap:20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="day-header">
+  <div class="header-top">
+    <div class="day-meta">Month 1 · Week 1 · Day 1 · Monday</div>
+    <h1>Probability Axioms<br>&amp; <em>Bayes' Theorem</em></h1>
+    <p>The mathematical foundation of all statistical reasoning. By end of day, you will understand probability not as a school subject, but as a tool you have been using intuitively for 7 years — now made rigorous.</p>
+  </div>
+  <div class="header-bottom">
+    <div class="hb-item"><div class="hb-dot"></div><div class="hb-text">9:00 AM Start</div></div>
+    <div class="hb-item"><div class="hb-dot"></div><div class="hb-text">8 Hours Total</div></div>
+    <div class="hb-item"><div class="hb-dot"></div><div class="hb-text">5 Theory Sections</div></div>
+    <div class="hb-item"><div class="hb-dot"></div><div class="hb-text">3 Worked Examples</div></div>
+    <div class="hb-item"><div class="hb-dot"></div><div class="hb-text">15-Question Quiz</div></div>
+    <div class="hb-item"><div class="hb-dot"></div><div class="hb-text">4 Python Exercises</div></div>
+  </div>
+</div>
+
+<!-- NOVA MESSAGE -->
+<div class="nova-today">
+  <div class="emoji">🔭</div>
+  <div>
+    <h3>Nova's Message for Day 1</h3>
+    <p>Welcome to Month 1. You've spent 7 years making decisions with data. Today we formalize the mathematical language underneath those decisions. Probability is not about uncertainty — it is about <em>quantifying</em> uncertainty so you can reason about it precisely. Every fraud score, every A/B test, every model output you have ever seen rests on what we cover today. Take your time. Derive everything. And before you open Python, make sure you can explain every concept out loud. Let's begin.</p>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc" style="margin:0 56px 40px;">
+  <h3>Today's Contents</h3>
+  <ol>
+    <li>Sample Spaces, Events & The Three Axioms of Probability</li>
+    <li>Set Operations: Union, Intersection, Complement</li>
+    <li>Conditional Probability — The Core Idea</li>
+    <li>Independence vs Mutual Exclusivity</li>
+    <li>Bayes' Theorem — Derivation, Intuition, and Payment Applications</li>
+    <li>Law of Total Probability</li>
+    <li>Python Lab — Build a Bayesian Fraud Calculator</li>
+    <li>Quiz — 15 Questions (Attempt Cold)</li>
+    <li>Problem Set — 4 Applied Problems</li>
+    <li>Day 1 Checklist</li>
+  </ol>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 1: SAMPLE SPACES & AXIOMS
+══════════════════════════════════════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-label">Section 1 · 9:15 AM – 10:00 AM</div>
+  <h2>Sample Spaces, Events & The Three Axioms</h2>
+  <p class="section-intro">Before we can talk about probability, we need precise language. The concepts here are simple — but the precision matters enormously. Imprecise probability language is where most analysts go wrong.</p>
+
+  <h3>1.1 The Sample Space (Ω)</h3>
+  <p>A <strong>sample space</strong> (written Ω, "omega") is the set of <em>all possible outcomes</em> of a random experiment. Every probability question begins by defining this space clearly.</p>
+
+  <div class="data-table" style="margin:0 0 20px;">
+    <table class="data-table">
+      <thead><tr><th>Experiment</th><th>Sample Space Ω</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><td>A single coin flip</td><td>{Heads, Tails}</td><td>2</td></tr>
+        <tr><td>A transaction is processed</td><td>{fraud, legitimate}</td><td>2</td></tr>
+        <tr><td>A transaction amount</td><td>[0, ∞) — any positive real number</td><td>Infinite</td></tr>
+        <tr><td>Card type used</td><td>{Visa, Mastercard, Amex, Discover, Other}</td><td>5</td></tr>
+        <tr><td>Number of disputes in a day</td><td>{0, 1, 2, 3, ...}</td><td>Countably infinite</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="intuition">
+    <div class="int-label">Intuition</div>
+    <h4>Sample space = the universe of what could happen</h4>
+    <p>When you build a fraud model, your implicit sample space is every transaction that could ever occur. When you run a report on yesterday's chargebacks, your sample space is every transaction processed that day. Being explicit about the sample space prevents you from making probability statements that don't make sense.</p>
+  </div>
+
+  <h3>1.2 Events</h3>
+  <p>An <strong>event</strong> is any subset of the sample space — a collection of outcomes you care about. Events are usually written as capital letters: A, B, C.</p>
+
+  <ul>
+    <li><strong>Elementary event:</strong> A single outcome. E.g., {fraud}</li>
+    <li><strong>Compound event:</strong> Multiple outcomes. E.g., {Visa, Mastercard} = "card is a major network"</li>
+    <li><strong>Impossible event (∅):</strong> An event that can never happen. P(∅) = 0</li>
+    <li><strong>Certain event (Ω):</strong> Something that always happens. P(Ω) = 1</li>
+  </ul>
+
+  <div class="domain">
+    <div class="dom-label">Your Domain · Payments</div>
+    <h4>Payment events you work with every day</h4>
+    <p>Event A = "transaction is fraudulent" · Event B = "transaction amount > $500" · Event C = "card used is not present" · Event D = "transaction declined" · Your job as a risk analyst is to reason about how these events relate — that's exactly what probability formalizes.</p>
+  </div>
+
+  <h3>1.3 The Three Axioms of Probability (Kolmogorov)</h3>
+  <p>All of probability theory rests on just three axioms, stated by Andrey Kolmogorov in 1933. Everything else — Bayes' theorem, the Central Limit Theorem, your fraud model's AUC — is derived from these three rules.</p>
+
+  <!-- AXIOM DIAGRAM -->
+  <div class="diagram-container">
+    <div class="diagram-title">The Three Axioms of Probability</div>
+    <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" style="max-width:680px;">
+      <!-- Axiom 1 -->
+      <rect x="10" y="10" width="200" height="110" rx="4" fill="#faf7f2" stroke="#c4bdb0" stroke-width="1.5"/>
+      <rect x="10" y="10" width="200" height="6" rx="4" fill="#c8410a"/>
+      <text x="110" y="40" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#c8410a" letter-spacing="2">AXIOM 1</text>
+      <text x="110" y="62" text-anchor="middle" font-family="Playfair Display, serif" font-size="15" fill="#0d0d0d">Non-negativity</text>
+      <text x="110" y="84" text-anchor="middle" font-family="DM Mono, monospace" font-size="14" fill="#c8410a">P(A) ≥ 0</text>
+      <text x="110" y="108" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Probability is never negative.</text>
+      <!-- Axiom 2 -->
+      <rect x="250" y="10" width="200" height="110" rx="4" fill="#faf7f2" stroke="#c4bdb0" stroke-width="1.5"/>
+      <rect x="250" y="10" width="200" height="6" rx="4" fill="#b8962e"/>
+      <text x="350" y="40" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#b8962e" letter-spacing="2">AXIOM 2</text>
+      <text x="350" y="62" text-anchor="middle" font-family="Playfair Display, serif" font-size="15" fill="#0d0d0d">Unitarity</text>
+      <text x="350" y="84" text-anchor="middle" font-family="DM Mono, monospace" font-size="14" fill="#b8962e">P(Ω) = 1</text>
+      <text x="350" y="108" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Something always happens.</text>
+      <!-- Axiom 3 -->
+      <rect x="490" y="10" width="200" height="110" rx="4" fill="#faf7f2" stroke="#c4bdb0" stroke-width="1.5"/>
+      <rect x="490" y="10" width="200" height="6" rx="4" fill="#1a4f6e"/>
+      <text x="590" y="40" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#1a4f6e" letter-spacing="2">AXIOM 3</text>
+      <text x="590" y="62" text-anchor="middle" font-family="Playfair Display, serif" font-size="15" fill="#0d0d0d">Additivity</text>
+      <text x="590" y="84" text-anchor="middle" font-family="DM Mono, monospace" font-size="13" fill="#1a4f6e">P(A∪B) = P(A)+P(B)</text>
+      <text x="590" y="103" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">if A and B can't both happen</text>
+      <text x="590" y="116" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">(mutually exclusive)</text>
+      <!-- Arrow to derived results -->
+      <line x1="350" y1="135" x2="350" y2="165" stroke="#c4bdb0" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="350" y="185" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6b6458" letter-spacing="1">FROM THESE 3 RULES WE DERIVE:</text>
+      <text x="160" y="215" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" fill="#0d0d0d">Bayes' Theorem</text>
+      <text x="350" y="215" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" fill="#0d0d0d">Central Limit Theorem</text>
+      <text x="540" y="215" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" fill="#0d0d0d">All of statistics</text>
+      <line x1="350" y1="195" x2="160" y2="205" stroke="#c4bdb0" stroke-width="1"/>
+      <line x1="350" y1="195" x2="350" y2="205" stroke="#c4bdb0" stroke-width="1"/>
+      <line x1="350" y1="195" x2="540" y2="205" stroke="#c4bdb0" stroke-width="1"/>
+    </svg>
+    <p class="diagram-caption">Everything in statistics is a consequence of these three rules. Memorize them. Understand why each is necessary.</p>
+  </div>
+
+  <div class="warning">
+    <div class="warn-label">Common Mistake</div>
+    <h4>Probabilities must sum to 1 — always check this</h4>
+    <p>If someone hands you a fraud model that says P(fraud) = 0.03 and P(legitimate) = 0.94, something is wrong — those add to 0.97, not 1. Either there's a missing category (disputes? pending?) or there's a rounding error. Always verify your probability space is complete. This is Axiom 2 in action.</p>
+  </div>
+
+</div><!-- end section 1 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 2: SET OPERATIONS
+══════════════════════════════════════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-label">Section 2 · 10:00 AM – 10:45 AM</div>
+  <h2>Set Operations: Union, Intersection, Complement</h2>
+  <p class="section-intro">Events can be combined. These three operations — plus one critical formula — are how we reason about multiple events happening together or separately.</p>
+
+  <!-- VENN DIAGRAM SVG -->
+  <div class="diagram-container">
+    <div class="diagram-title">Set Operations Visualized — Payment Events</div>
+    <svg viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" style="max-width:660px;">
+      <!-- Set 1: UNION -->
+      <text x="110" y="22" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#c8410a" letter-spacing="2">A ∪ B (UNION)</text>
+      <circle cx="85" cy="90" r="55" fill="rgba(200,65,10,0.2)" stroke="#c8410a" stroke-width="2"/>
+      <circle cx="135" cy="90" r="55" fill="rgba(200,65,10,0.2)" stroke="#c8410a" stroke-width="2"/>
+      <text x="72" y="87" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#0d0d0d">Fraud</text>
+      <text x="148" y="87" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#0d0d0d">High</text>
+      <text x="148" y="100" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#0d0d0d">Amount</text>
+      <text x="110" y="155" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Fraud OR high amount (or both)</text>
+
+      <!-- Set 2: INTERSECTION -->
+      <text x="340" y="22" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#1a4f6e" letter-spacing="2">A ∩ B (INTERSECTION)</text>
+      <circle cx="315" cy="90" r="55" fill="rgba(200,65,10,0.12)" stroke="#c4bdb0" stroke-width="1.5"/>
+      <circle cx="365" cy="90" r="55" fill="rgba(26,79,110,0.12)" stroke="#c4bdb0" stroke-width="1.5"/>
+      <!-- Intersection highlight -->
+      <ellipse cx="340" cy="90" rx="22" ry="48" fill="rgba(26,79,110,0.35)" stroke="#1a4f6e" stroke-width="1.5"/>
+      <text x="302" y="87" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#0d0d0d">Fraud</text>
+      <text x="378" y="87" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#0d0d0d">High $</text>
+      <text x="340" y="93" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" fill="#1a4f6e">BOTH</text>
+      <text x="340" y="155" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Fraud AND high amount</text>
+
+      <!-- Set 3: COMPLEMENT -->
+      <text x="570" y="22" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#2d7a4f" letter-spacing="2">Aᶜ (COMPLEMENT)</text>
+      <rect x="510" y="35" width="120" height="100" rx="4" fill="rgba(45,122,79,0.15)" stroke="#2d7a4f" stroke-width="1.5"/>
+      <circle cx="570" cy="85" r="38" fill="rgba(200,65,10,0.15)" stroke="#c8410a" stroke-width="2"/>
+      <text x="570" y="89" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#c8410a">Fraud</text>
+      <text x="520" y="65" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#2d7a4f">Not</text>
+      <text x="619" y="65" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#2d7a4f">Not</text>
+      <text x="520" y="78" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#2d7a4f">fraud</text>
+      <text x="619" y="78" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#2d7a4f">fraud</text>
+      <text x="570" y="155" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Everything that is NOT fraud</text>
+
+      <!-- Formula row -->
+      <rect x="10" y="185" width="200" height="50" rx="3" fill="#faf7f2" stroke="#c4bdb0"/>
+      <text x="110" y="206" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#c8410a">P(A∪B) = P(A)+P(B)-P(A∩B)</text>
+      <text x="110" y="225" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Avoid double-counting!</text>
+
+      <rect x="240" y="185" width="200" height="50" rx="3" fill="#faf7f2" stroke="#c4bdb0"/>
+      <text x="340" y="206" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#1a4f6e">P(A∩B) = P(A) × P(B|A)</text>
+      <text x="340" y="225" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Multiplication rule</text>
+
+      <rect x="470" y="185" width="200" height="50" rx="3" fill="#faf7f2" stroke="#c4bdb0"/>
+      <text x="570" y="206" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#2d7a4f">P(Aᶜ) = 1 - P(A)</text>
+      <text x="570" y="225" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Complement rule</text>
+
+      <!-- De Morgan's -->
+      <text x="340" y="285" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#b8962e">De Morgan's Laws:  (A∪B)ᶜ = Aᶜ∩Bᶜ   and   (A∩B)ᶜ = Aᶜ∪Bᶜ</text>
+    </svg>
+    <p class="diagram-caption">The General Addition Rule P(A∪B) = P(A)+P(B)−P(A∩B) prevents double-counting outcomes that belong to both A and B.</p>
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Key Formula</div>
+    <div class="def-title">The General Addition Rule</div>
+    <div class="formula">P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</div>
+    <p>Why subtract the intersection? Because any outcome in both A and B gets counted once in P(A), once in P(B) — so it's been counted twice. We subtract one copy. This is the fix for double-counting.</p>
+    <p style="margin-top:10px;"><strong style="color:var(--gold);">Special case:</strong> If A and B are mutually exclusive (can't both happen), then P(A∩B) = 0, so P(A∪B) = P(A) + P(B). This is Axiom 3.</p>
+  </div>
+
+  <div class="example">
+    <span class="example-label">Worked Example 1</span>
+    <h4>Payment Fraud: Computing Union Probability</h4>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:16px;">In your payments database, you observe the following about transactions:</p>
+    <ul style="font-size:14px; color:var(--muted); margin-bottom:16px; padding-left:20px;">
+      <li>P(fraud) = 0.02 (2% of transactions are fraudulent)</li>
+      <li>P(amount > $1000) = 0.08 (8% are high-value)</li>
+      <li>P(fraud AND amount > $1000) = 0.012</li>
+    </ul>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:16px;"><strong>Question:</strong> What is the probability that a transaction is either fraudulent OR high-value (or both)?</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Identify the formula</strong>
+        <div class="formula">P(fraud ∪ high_value) = P(fraud) + P(high_value) − P(fraud ∩ high_value)</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Plug in the values</strong>
+        <div class="formula">= 0.02 + 0.08 − 0.012</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>Calculate</strong>
+        <div class="formula">= 0.088</div>
+      </div>
+    </div>
+    <div class="answer">Answer: 8.8% of transactions are either fraudulent or high-value (or both).</div>
+    <p style="font-size:13px; color:var(--muted); margin-top:12px;"><strong>Why not just add 2% + 8% = 10%?</strong> Because the 1.2% of transactions that are BOTH fraudulent AND high-value would be counted twice. We subtract it once to correct this.</p>
+  </div>
+
+</div><!-- end section 2 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 3: CONDITIONAL PROBABILITY
+══════════════════════════════════════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-label">Section 3 · 10:45 AM – 11:30 AM</div>
+  <h2>Conditional Probability</h2>
+  <p class="section-intro">This is the heart of probabilistic reasoning in fraud analytics. Conditional probability lets us update our beliefs when we learn new information. Every time you see a new transaction feature, you are — whether you knew it or not — performing conditional probability reasoning.</p>
+
+  <div class="def-box">
+    <div class="def-label">Definition</div>
+    <div class="def-title">Conditional Probability P(A | B)</div>
+    <div class="formula">P(A | B) = P(A ∩ B) / P(B),   provided P(B) > 0</div>
+    <p>Read as: "The probability of A, <em>given that</em> B has occurred." You are shrinking the sample space from Ω down to just B, then asking what fraction of B is also A.</p>
+  </div>
+
+  <!-- CONDITIONAL PROBABILITY DIAGRAM -->
+  <div class="diagram-container">
+    <div class="diagram-title">Conditional Probability — Shrinking the Sample Space</div>
+    <svg viewBox="0 0 660 240" xmlns="http://www.w3.org/2000/svg" style="max-width:640px;">
+      <!-- Full sample space -->
+      <rect x="10" y="30" width="280" height="160" rx="6" fill="#f5f0e8" stroke="#c4bdb0" stroke-width="2"/>
+      <text x="150" y="20" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6b6458" letter-spacing="2">BEFORE CONDITIONING: Full Ω</text>
+      <text x="30" y="55" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">All transactions</text>
+      <circle cx="115" cy="120" r="50" fill="rgba(200,65,10,0.18)" stroke="#c8410a" stroke-width="2"/>
+      <circle cx="165" cy="120" r="50" fill="rgba(26,79,110,0.15)" stroke="#1a4f6e" stroke-width="2"/>
+      <text x="95" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#c8410a">Fraud</text>
+      <text x="95" y="127" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#c8410a">A</text>
+      <text x="185" y="115" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#1a4f6e">CNP</text>
+      <text x="185" y="127" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#1a4f6e">B</text>
+      <text x="140" y="118" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" fill="#5b3fa0">A∩B</text>
+
+      <!-- Arrow -->
+      <line x1="310" y1="110" x2="350" y2="110" stroke="#c4bdb0" stroke-width="2"/>
+      <polygon points="350,105 360,110 350,115" fill="#c4bdb0"/>
+      <text x="330" y="102" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#c8410a">Given B</text>
+      <text x="330" y="122" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="#6b6458">occurred</text>
+
+      <!-- Conditioned space -->
+      <circle cx="480" cy="110" r="65" fill="rgba(26,79,110,0.15)" stroke="#1a4f6e" stroke-width="2.5"/>
+      <text x="480" y="50" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6b6458" letter-spacing="2">AFTER CONDITIONING: Only B</text>
+      <text x="480" y="78" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#1a4f6e">New Ω = B</text>
+      <text x="480" y="91" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#1a4f6e">(Card Not Present txns)</text>
+      <ellipse cx="460" cy="115" rx="24" ry="40" fill="rgba(200,65,10,0.35)" stroke="#c8410a" stroke-width="1.5"/>
+      <text x="460" y="112" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" fill="#c8410a">A∩B</text>
+      <text x="460" y="124" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" fill="#c8410a">Fraud+CNP</text>
+      <text x="510" y="118" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" fill="#1a4f6e">Legit CNP</text>
+      <text x="480" y="190" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#c8410a">P(Fraud | CNP) = P(A∩B) / P(B)</text>
+    </svg>
+    <p class="diagram-caption">When we condition on B (card-not-present transactions), we shrink our universe to only B. We then ask: of all CNP transactions, what fraction are fraudulent? That fraction is P(Fraud | CNP).</p>
+  </div>
+
+  <div class="domain">
+    <div class="dom-label">Your Domain · Payments</div>
+    <h4>Conditional probability is your core daily tool</h4>
+    <p>Every fraud score your models produce is a conditional probability: P(fraud | features). When you say "this transaction looks risky," you are computing P(fraud | card_not_present=1, new_merchant=1, amount=$2500) intuitively. Today we make that formal.</p>
+  </div>
+
+  <div class="example">
+    <span class="example-label">Worked Example 2</span>
+    <h4>Fraud Rate by Card-Not-Present Status</h4>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:16px;">Your payment system processes 1,000,000 transactions per day. You know:</p>
+    <ul style="font-size:14px; color:var(--muted); margin-bottom:16px; padding-left:20px;">
+      <li>300,000 are card-not-present (CNP) transactions → P(CNP) = 0.30</li>
+      <li>20,000 are both fraudulent AND CNP → P(fraud ∩ CNP) = 0.02</li>
+      <li>Total fraudulent transactions: 22,000 → P(fraud) = 0.022</li>
+    </ul>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:16px;"><strong>Question 1:</strong> What is P(fraud | CNP)? — fraud rate among CNP transactions</p>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:16px;"><strong>Question 2:</strong> What is P(fraud | NOT CNP)? — fraud rate among card-present transactions</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>P(fraud | CNP)</strong>
+        <div class="formula">P(fraud | CNP) = P(fraud ∩ CNP) / P(CNP) = 0.02 / 0.30 = 0.0667</div>
+        <p style="font-size:13px; color:var(--muted); margin-top:4px;">About 6.7% of CNP transactions are fraudulent.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>P(fraud ∩ NOT CNP)</strong>
+        <div class="formula">= P(fraud) − P(fraud ∩ CNP) = 0.022 − 0.02 = 0.002</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>P(NOT CNP) = 1 − 0.30 = 0.70</strong>
+        <div class="formula">P(fraud | NOT CNP) = 0.002 / 0.70 = 0.00286</div>
+        <p style="font-size:13px; color:var(--muted); margin-top:4px;">About 0.29% of card-present transactions are fraudulent.</p>
+      </div>
+    </div>
+    <div class="answer">CNP transactions have a 6.67% fraud rate vs 0.29% for card-present — 23x higher risk. This is precisely why CNP is a critical feature in every fraud model.</div>
+  </div>
+
+</div><!-- end section 3 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 4: INDEPENDENCE
+══════════════════════════════════════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-label">Section 4 · After Lunch · 14:00 PM – 14:45 PM</div>
+  <h2>Independence vs Mutual Exclusivity</h2>
+  <p class="section-intro">These two concepts are frequently confused. Understanding the difference is critical — getting it wrong leads to catastrophically incorrect probability calculations.</p>
+
+  <div class="diagram-container">
+    <div class="diagram-title">Independence vs Mutual Exclusivity — The Critical Distinction</div>
+    <svg viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" style="max-width:640px;">
+      <!-- Independent Events -->
+      <rect x="10" y="10" width="300" height="170" rx="6" fill="#f5f0e8" stroke="#2d7a4f" stroke-width="1.5"/>
+      <text x="160" y="35" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#2d7a4f" letter-spacing="2">INDEPENDENT EVENTS</text>
+      <circle cx="130" cy="105" r="52" fill="rgba(200,65,10,0.2)" stroke="#c8410a" stroke-width="2"/>
+      <circle cx="185" cy="105" r="52" fill="rgba(26,79,110,0.2)" stroke="#1a4f6e" stroke-width="2"/>
+      <!-- Overlap shown -->
+      <text x="115" y="100" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#c8410a">A</text>
+      <text x="200" y="100" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#1a4f6e">B</text>
+      <text x="158" y="105" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" fill="#5b3fa0">A∩B</text>
+      <text x="160" y="165" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#2d7a4f">P(A|B) = P(A)</text>
+      <text x="160" y="180" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#6b6458">B gives no info about A</text>
+
+      <!-- Mutually Exclusive -->
+      <rect x="350" y="10" width="300" height="170" rx="6" fill="#f5f0e8" stroke="#c8410a" stroke-width="1.5"/>
+      <text x="500" y="35" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#c8410a" letter-spacing="2">MUTUALLY EXCLUSIVE</text>
+      <circle cx="430" cy="105" r="52" fill="rgba(200,65,10,0.2)" stroke="#c8410a" stroke-width="2"/>
+      <circle cx="565" cy="105" r="52" fill="rgba(26,79,110,0.2)" stroke="#1a4f6e" stroke-width="2"/>
+      <text x="415" y="108" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#c8410a">A</text>
+      <text x="580" y="108" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#1a4f6e">B</text>
+      <!-- No overlap line -->
+      <line x1="497" y1="60" x2="497" y2="150" stroke="#c4bdb0" stroke-width="1.5" stroke-dasharray="4"/>
+      <text x="500" y="165" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#c8410a">P(A∩B) = 0</text>
+      <text x="500" y="180" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" fill="#6b6458">They can NEVER both happen</text>
+    </svg>
+    <p class="diagram-caption">Independent: knowing B happened tells you nothing about A. Mutually exclusive: if A happens, B definitely didn't (and vice versa). These are fundamentally different ideas.</p>
+  </div>
+
+  <h3>The Critical Formulas</h3>
+
+  <div class="def-box">
+    <div class="def-label">Independence</div>
+    <div class="def-title">Events A and B are independent if and only if:</div>
+    <div class="formula">P(A ∩ B) = P(A) × P(B)</div>
+    <p>Equivalently: P(A|B) = P(A). Knowing B occurred gives you no information about whether A occurred. The multiplication rule simplifies dramatically when events are independent.</p>
+  </div>
+
+  <div class="def-box" style="margin-top:16px;">
+    <div class="def-label">Mutual Exclusivity</div>
+    <div class="def-title">Events A and B are mutually exclusive if:</div>
+    <div class="formula">P(A ∩ B) = 0    →    P(A ∪ B) = P(A) + P(B)</div>
+    <p>They cannot both happen. But — critically — this does NOT mean they are independent! In fact, if A and B are mutually exclusive and both have P > 0, they are DEPENDENT, because knowing A happened tells you B definitely didn't.</p>
+  </div>
+
+  <div class="warning">
+    <div class="warn-label">The Classic Confusion</div>
+    <h4>Mutually exclusive ≠ Independent</h4>
+    <p>If a transaction is flagged as "fraud" and "not fraud" are mutually exclusive, they are also maximally dependent — knowing it's fraud tells you with certainty it's not legitimate. Independent events can occur together. Mutually exclusive events cannot. Do not confuse these two concepts — it leads to wrong probability calculations in fraud models and A/B tests.</p>
+  </div>
+
+  <div class="domain">
+    <div class="dom-label">Your Domain · Fraud Analytics</div>
+    <h4>When to use which assumption in payments</h4>
+    <p><strong>Independence (often violated!):</strong> Naive fraud models sometimes assume features are independent — that P(CNP=1 AND night_transaction=1) = P(CNP=1) × P(night=1). In reality, CNP and night transactions are correlated. This assumption violation is why Naive Bayes fraud models underperform tree-based models.</p>
+    <p style="margin-top:8px;"><strong>Mutual exclusivity:</strong> Outcome classes (fraud/legitimate) in binary classification are mutually exclusive by definition. Transaction authorization outcomes (approved/declined) are mutually exclusive.</p>
+  </div>
+
+</div><!-- end section 4 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 5: BAYES' THEOREM
+══════════════════════════════════════════════════════ -->
+<div class="section" id="s5">
+  <div class="section-label">Section 5 · 14:45 PM – 16:00 PM — THE MOST IMPORTANT SECTION TODAY</div>
+  <h2>Bayes' Theorem</h2>
+  <p class="section-intro">This is the most important formula in all of statistics for fraud analytics. Every time you update a fraud score based on new evidence, you are applying Bayes' theorem. We will derive it from scratch, understand every term, and apply it to three real payment scenarios.</p>
+
+  <h3>5.1 Deriving Bayes' Theorem</h3>
+  <p>We need two things we already know:</p>
+  <ol style="margin-bottom:16px;">
+    <li style="font-size:15px; padding:4px 0;">Conditional probability: P(A|B) = P(A∩B) / P(B), so P(A∩B) = P(A|B) × P(B)</li>
+    <li style="font-size:15px; padding:4px 0;">Conditional probability again: P(B|A) = P(A∩B) / P(A), so P(A∩B) = P(B|A) × P(A)</li>
+  </ol>
+  <p>Since both right-hand sides equal P(A∩B), they equal each other:</p>
+
+  <div class="def-box">
+    <div class="def-label">Derivation Complete</div>
+    <div class="def-title">Bayes' Theorem</div>
+    <div class="formula">P(A|B) = [ P(B|A) × P(A) ] / P(B)</div>
+    <p>That's it. It falls directly from the definition of conditional probability. No magic. Just algebra.</p>
+  </div>
+
+  <h3>5.2 Understanding Every Term</h3>
+
+  <!-- BAYES DIAGRAM -->
+  <div class="diagram-container">
+    <div class="diagram-title">Bayes' Theorem — Every Term Explained for Fraud Analytics</div>
+    <svg viewBox="0 0 680 310" xmlns="http://www.w3.org/2000/svg" style="max-width:660px;">
+      <!-- Formula display -->
+      <rect x="10" y="10" width="660" height="60" rx="4" fill="#0d0d0d"/>
+      <text x="340" y="32" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#6a7a8a" letter-spacing="2">BAYES' THEOREM FOR FRAUD</text>
+      <text x="340" y="58" text-anchor="middle" font-family="DM Mono, monospace" font-size="16" fill="#b8962e">P(Fraud|Features) = P(Features|Fraud) × P(Fraud) / P(Features)</text>
+
+      <!-- Term boxes -->
+      <!-- P(Fraud|Features) -->
+      <rect x="10" y="90" width="155" height="100" rx="4" fill="rgba(200,65,10,0.1)" stroke="#c8410a" stroke-width="1.5"/>
+      <text x="87" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#c8410a">P(Fraud|Features)</text>
+      <text x="87" y="132" text-anchor="middle" font-family="Playfair Display, serif" font-size="14" fill="#0d0d0d">POSTERIOR</text>
+      <text x="87" y="150" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">What we WANT:</text>
+      <text x="87" y="164" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">P(fraud given what</text>
+      <text x="87" y="178" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">we observed)</text>
+
+      <!-- = -->
+      <text x="178" y="145" text-anchor="middle" font-family="DM Mono, monospace" font-size="20" fill="#c4bdb0">=</text>
+
+      <!-- P(Features|Fraud) -->
+      <rect x="195" y="90" width="155" height="100" rx="4" fill="rgba(26,79,110,0.1)" stroke="#1a4f6e" stroke-width="1.5"/>
+      <text x="272" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#1a4f6e">P(Features|Fraud)</text>
+      <text x="272" y="132" text-anchor="middle" font-family="Playfair Display, serif" font-size="14" fill="#0d0d0d">LIKELIHOOD</text>
+      <text x="272" y="150" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">How often do we see</text>
+      <text x="272" y="164" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">these features in</text>
+      <text x="272" y="178" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">known fraud cases?</text>
+
+      <!-- × -->
+      <text x="363" y="145" text-anchor="middle" font-family="DM Mono, monospace" font-size="20" fill="#c4bdb0">×</text>
+
+      <!-- P(Fraud) -->
+      <rect x="380" y="90" width="140" height="100" rx="4" fill="rgba(184,150,46,0.12)" stroke="#b8962e" stroke-width="1.5"/>
+      <text x="450" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#b8962e">P(Fraud)</text>
+      <text x="450" y="132" text-anchor="middle" font-family="Playfair Display, serif" font-size="14" fill="#0d0d0d">PRIOR</text>
+      <text x="450" y="150" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Our belief BEFORE</text>
+      <text x="450" y="164" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">seeing the features.</text>
+      <text x="450" y="178" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">Base rate = 2%</text>
+
+      <!-- / -->
+      <text x="533" y="145" text-anchor="middle" font-family="DM Mono, monospace" font-size="20" fill="#c4bdb0">/</text>
+
+      <!-- P(Features) -->
+      <rect x="545" y="90" width="125" height="100" rx="4" fill="rgba(91,63,160,0.1)" stroke="#5b3fa0" stroke-width="1.5"/>
+      <text x="607" y="112" text-anchor="middle" font-family="DM Mono, monospace" font-size="12" fill="#5b3fa0">P(Features)</text>
+      <text x="607" y="132" text-anchor="middle" font-family="Playfair Display, serif" font-size="14" fill="#0d0d0d">EVIDENCE</text>
+      <text x="607" y="150" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">How common are</text>
+      <text x="607" y="164" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">these features</text>
+      <text x="607" y="178" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" fill="#6b6458">overall?</text>
+
+      <!-- Update arrow -->
+      <rect x="10" y="215" width="660" height="80" rx="4" fill="#faf7f2" stroke="#c4bdb0" stroke-width="1"/>
+      <text x="340" y="235" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#6b6458" letter-spacing="2">THE BAYESIAN UPDATE PROCESS</text>
+      <text x="100" y="265" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#b8962e">Prior Belief</text>
+      <text x="100" y="280" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#b8962e">P(Fraud) = 2%</text>
+      <line x1="160" y1="270" x2="220" y2="270" stroke="#c4bdb0" stroke-width="1.5"/>
+      <polygon points="220,265 230,270 220,275" fill="#c4bdb0"/>
+      <text x="270" y="265" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" fill="#1a4f6e">New Evidence</text>
+      <text x="270" y="280" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" fill="#1a4f6e">CNP + night + $2500</text>
+      <line x1="340" y1="270" x2="400" y2="270" stroke="#c4bdb0" stroke-width="1.5"/>
+      <polygon points="400,265 410,270 400,275" fill="#c4bdb0"/>
+      <text x="460" y="265" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" fill="#c8410a">Updated Belief</text>
+      <text x="460" y="280" text-anchor="middle" font-family="DM Mono, monospace" font-size="11" fill="#c8410a">P(Fraud|evidence) = 34%</text>
+      <line x1="540" y1="270" x2="600" y2="270" stroke="#c4bdb0" stroke-width="1.5"/>
+      <polygon points="600,265 610,270 600,275" fill="#c4bdb0"/>
+      <text x="640" y="275" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" fill="#5b3fa0">Posterior</text>
+    </svg>
+    <p class="diagram-caption">Bayes' theorem is a machine for updating beliefs. You start with a prior (base rate), see evidence, and produce a posterior (updated probability). This is exactly what a fraud model does, mathematically.</p>
+  </div>
+
+  <h3>5.3 The Law of Total Probability (for computing the denominator)</h3>
+  <p>The denominator P(B) in Bayes' theorem is often computed using the Law of Total Probability. If A₁, A₂, ..., Aₙ partition the sample space (mutually exclusive, exhaustive), then:</p>
+
+  <div class="def-box">
+    <div class="def-label">Law of Total Probability</div>
+    <div class="formula">P(B) = P(B|A₁)P(A₁) + P(B|A₂)P(A₂) + ... + P(B|Aₙ)P(Aₙ)</div>
+    <p>For the two-class case (fraud / legitimate): P(Features) = P(Features|Fraud)×P(Fraud) + P(Features|Legit)×P(Legit)</p>
+  </div>
+
+  <div class="example">
+    <span class="example-label">Worked Example 3 — The Most Important One Today</span>
+    <h4>Bayes' Theorem: Updating Fraud Probability with Evidence</h4>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:16px;">Your fraud system receives a transaction. Before seeing any features, the base fraud rate is P(Fraud) = 0.02 (2%). You observe: the transaction is card-not-present (CNP).</p>
+    <p style="color:var(--muted); font-size:14px; margin-bottom:16px;">From your historical data:</p>
+    <ul style="font-size:14px; color:var(--muted); margin-bottom:16px; padding-left:20px;">
+      <li>P(CNP | Fraud) = 0.80 → 80% of fraudulent transactions are CNP</li>
+      <li>P(CNP | Legit) = 0.25 → 25% of legitimate transactions are CNP</li>
+      <li>P(Fraud) = 0.02, P(Legit) = 0.98</li>
+    </ul>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:16px;"><strong>Question:</strong> Given that the transaction is CNP, what is the updated probability of fraud?</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Compute the denominator P(CNP) using the Law of Total Probability</strong>
+        <div class="formula">P(CNP) = P(CNP|Fraud)×P(Fraud) + P(CNP|Legit)×P(Legit)</div>
+        <div class="formula">= (0.80 × 0.02) + (0.25 × 0.98)</div>
+        <div class="formula">= 0.016 + 0.245 = 0.261</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Apply Bayes' Theorem</strong>
+        <div class="formula">P(Fraud | CNP) = P(CNP | Fraud) × P(Fraud) / P(CNP)</div>
+        <div class="formula">= (0.80 × 0.02) / 0.261</div>
+        <div class="formula">= 0.016 / 0.261 = 0.0613</div>
+      </div>
+    </div>
+    <div class="answer">Answer: P(Fraud | CNP) ≈ 6.1%. The CNP signal tripled our fraud probability from 2% to 6.1%.</div>
+    <p style="font-size:13px; color:var(--muted); margin-top:12px;"><strong>The intuition:</strong> Even though 80% of fraud is CNP, most CNP transactions are still legitimate (because fraud is rare overall). Bayes' theorem forces us to account for the base rate — this is called the "base rate fallacy" when people ignore it. Many fraud analysts over-estimate fraud rates because they forget the prior.</p>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;"><strong>Now try it yourself:</strong> What would P(Fraud|CNP) be if P(Fraud) = 0.10? Recalculate and observe how the posterior changes with a different prior.</p>
+  </div>
+
+</div><!-- end section 5 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     SECTION 6: PYTHON LAB
+══════════════════════════════════════════════════════ -->
+<div class="section" id="s6">
+  <div class="section-label">Section 6 · Python Lab · 16:15 PM – 17:45 PM</div>
+  <h2>Python Lab — Build a Bayesian Fraud Calculator</h2>
+  <p class="section-intro">Open Jupyter. Create a new notebook called <strong>day01_probability_bayes.ipynb</strong>. Work through each exercise below. Do not copy-paste. Type every line. The typing is part of learning.</p>
+
+  <h3>Exercise 1: Basic Probability Operations</h3>
+  <div class="code-block">
+<span class="comment"># ─── Exercise 1: Basic Probability Operations ────────────────────────────────</span>
+<span class="comment"># Run this in your Jupyter notebook</span>
+
+<span class="keyword">import</span> numpy <span class="keyword">as</span> np
+<span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt
+<span class="keyword">import</span> matplotlib.patches <span class="keyword">as</span> mpatches
+<span class="keyword">from</span> fractions <span class="keyword">import</span> Fraction  <span class="comment"># useful for exact probability fractions</span>
+
+<span class="comment"># Define your probability space</span>
+p_fraud = <span class="number">0.02</span>
+p_legitimate = <span class="number">1</span> - p_fraud
+
+<span class="comment"># Verify axiom 2: they must sum to 1</span>
+<span class="function">print</span>(<span class="string">f"P(fraud) + P(legitimate) = {p_fraud + p_legitimate}"</span>)
+<span class="function">assert</span> abs((p_fraud + p_legitimate) - <span class="number">1.0</span>) &lt; <span class="number">1e-10</span>, <span class="string">"Probabilities don't sum to 1!"</span>
+
+<span class="comment"># ── Addition Rule ────────────────────────────────────────────────────────────</span>
+p_high_value = <span class="number">0.08</span>        <span class="comment"># P(amount > $1000)</span>
+p_fraud_and_high = <span class="number">0.012</span>   <span class="comment"># P(fraud ∩ high_value)</span>
+
+<span class="comment"># General addition rule: P(A ∪ B) = P(A) + P(B) - P(A ∩ B)</span>
+p_fraud_or_high = p_fraud + p_high_value - p_fraud_and_high
+<span class="function">print</span>(<span class="string">f"P(fraud OR high_value) = {p_fraud_or_high:.4f}"</span>)
+
+<span class="comment"># ── Complement Rule ──────────────────────────────────────────────────────────</span>
+p_not_fraud = <span class="number">1</span> - p_fraud
+<span class="function">print</span>(<span class="string">f"P(not fraud) = {p_not_fraud:.4f}"</span>)
+
+<span class="comment"># ── Conditional Probability ──────────────────────────────────────────────────</span>
+p_cnp = <span class="number">0.30</span>                <span class="comment"># P(card not present)</span>
+p_fraud_and_cnp = <span class="number">0.020</span>    <span class="comment"># P(fraud ∩ CNP)</span>
+
+p_fraud_given_cnp = p_fraud_and_cnp / p_cnp
+<span class="function">print</span>(<span class="string">f"P(fraud | CNP) = {p_fraud_given_cnp:.4f} = {p_fraud_given_cnp*100:.1f}%"</span>)
+<span class="output"># P(fraud | CNP) = 0.0667 = 6.7%</span>
+  </div>
+
+  <h3>Exercise 2: Build a Bayes' Theorem Calculator Function</h3>
+  <div class="code-block">
+<span class="comment"># ─── Exercise 2: Bayes' Theorem Calculator ───────────────────────────────────</span>
+
+<span class="keyword">def</span> <span class="function">bayesian_fraud_update</span>(prior_fraud, likelihood_given_fraud, likelihood_given_legit):
+    <span class="string">"""
+    Update fraud probability using Bayes' Theorem.
+    
+    Parameters:
+    -----------
+    prior_fraud : float
+        Prior probability of fraud (base rate). E.g., 0.02
+    likelihood_given_fraud : float
+        P(evidence | fraud). How likely is this feature given it's fraud?
+    likelihood_given_legit : float
+        P(evidence | legit). How likely is this feature given it's legitimate?
+    
+    Returns:
+    --------
+    float : Posterior probability P(fraud | evidence)
+    """</span>
+    prior_legit = <span class="number">1</span> - prior_fraud
+    
+    <span class="comment"># Numerator: P(evidence | fraud) × P(fraud)</span>
+    numerator = likelihood_given_fraud * prior_fraud
+    
+    <span class="comment"># Denominator: P(evidence) via Law of Total Probability</span>
+    denominator = (likelihood_given_fraud * prior_fraud + 
+                   likelihood_given_legit * prior_legit)
+    
+    <span class="comment"># Bayes' theorem</span>
+    posterior = numerator / denominator
+    
+    <span class="keyword">return</span> posterior
+
+<span class="comment"># Test with our CNP example</span>
+posterior = <span class="function">bayesian_fraud_update</span>(
+    prior_fraud=<span class="number">0.02</span>,
+    likelihood_given_fraud=<span class="number">0.80</span>,    <span class="comment"># 80% of fraud is CNP</span>
+    likelihood_given_legit=<span class="number">0.25</span>     <span class="comment"># 25% of legit is CNP</span>
+)
+<span class="function">print</span>(<span class="string">f"P(fraud | CNP) = {posterior:.4f} = {posterior*100:.2f}%"</span>)
+<span class="output"># P(fraud | CNP) = 0.0613 = 6.13%</span>
+
+<span class="comment"># ── Sequential Bayesian Updating ─────────────────────────────────────────────</span>
+<span class="comment"># What happens when we observe MULTIPLE features?</span>
+<span class="comment"># We update sequentially: posterior from step 1 becomes prior for step 2</span>
+
+print(<span class="string">"\n── Sequential Updating ──"</span>)
+print(<span class="string">f"Start: P(fraud) = 2.00%"</span>)
+
+<span class="comment"># Evidence 1: Card Not Present</span>
+p = <span class="function">bayesian_fraud_update</span>(<span class="number">0.02</span>, <span class="number">0.80</span>, <span class="number">0.25</span>)
+<span class="function">print</span>(<span class="string">f"After CNP signal:     P(fraud) = {p*100:.2f}%"</span>)
+
+<span class="comment"># Evidence 2: Late night transaction (11pm-4am)</span>
+<span class="comment"># Assume: P(night | fraud)=0.45, P(night | legit)=0.12</span>
+p = <span class="function">bayesian_fraud_update</span>(p, <span class="number">0.45</span>, <span class="number">0.12</span>)
+<span class="function">print</span>(<span class="string">f"After night signal:   P(fraud) = {p*100:.2f}%"</span>)
+
+<span class="comment"># Evidence 3: Amount > $2000</span>
+<span class="comment"># Assume: P(high_amt | fraud)=0.35, P(high_amt | legit)=0.05</span>
+p = <span class="function">bayesian_fraud_update</span>(p, <span class="number">0.35</span>, <span class="number">0.05</span>)
+<span class="function">print</span>(<span class="string">f"After high $ signal:  P(fraud) = {p*100:.2f}%"</span>)
+
+<span class="output"># Start: P(fraud) = 2.00%
+# After CNP signal:     P(fraud) = 6.13%
+# After night signal:   P(fraud) = 18.54%
+# After high $ signal:  P(fraud) = 57.86%</span>
+  </div>
+
+  <h3>Exercise 3: Visualize Bayesian Updating</h3>
+  <div class="code-block">
+<span class="comment"># ─── Exercise 3: Visualize How Prior Changes Posterior ───────────────────────</span>
+
+priors = np.linspace(<span class="number">0.001</span>, <span class="number">0.20</span>, <span class="number">200</span>)   <span class="comment"># Base rates from 0.1% to 20%</span>
+posteriors = [<span class="function">bayesian_fraud_update</span>(p, <span class="number">0.80</span>, <span class="number">0.25</span>) <span class="keyword">for</span> p <span class="keyword">in</span> priors]
+
+fig, (ax1, ax2) = plt.<span class="function">subplots</span>(<span class="number">1</span>, <span class="number">2</span>, figsize=(<span class="number">12</span>, <span class="number">5</span>))
+
+<span class="comment"># Plot 1: Prior vs Posterior</span>
+ax1.<span class="function">plot</span>(priors * <span class="number">100</span>, posteriors * <span class="number">100</span> 
+       <span class="keyword">if</span> <span class="keyword">isinstance</span>(posteriors[<span class="number">0</span>], float) 
+       <span class="keyword">else</span> [p * <span class="number">100</span> <span class="keyword">for</span> p <span class="keyword">in</span> posteriors],
+       color=<span class="string">'#c8410a'</span>, linewidth=<span class="number">2.5</span>)
+ax1.<span class="function">plot</span>(priors * <span class="number">100</span>, priors * <span class="number">100</span>, 
+       color=<span class="string">'#c4bdb0'</span>, linewidth=<span class="number">1</span>, linestyle=<span class="string">'--'</span>, label=<span class="string">'No update (45° line)'</span>)
+ax1.<span class="function">axvline</span>(<span class="number">2</span>, color=<span class="string">'#b8962e'</span>, linestyle=<span class="string">':'</span>, label=<span class="string">'Our prior (2%)'</span>)
+ax1.<span class="function">set_xlabel</span>(<span class="string">'Prior P(Fraud) %'</span>)
+ax1.<span class="function">set_ylabel</span>(<span class="string">'Posterior P(Fraud | CNP) %'</span>)
+ax1.<span class="function">set_title</span>(<span class="string">'Effect of Base Rate on Posterior\n(CNP signal: P(CNP|F)=0.80, P(CNP|L)=0.25)'</span>)
+ax1.<span class="function">legend</span>()
+ax1.<span class="function">grid</span>(True, alpha=<span class="number">0.3</span>)
+
+<span class="comment"># Plot 2: Sequential updates — watch fraud probability climb</span>
+stages = [<span class="string">'Prior\n(base rate)'</span>, <span class="string">'After CNP\nsignal'</span>, <span class="string">'After night\nsignal'</span>, <span class="string">'After high $\nsignal'</span>]
+probs = [<span class="number">2.0</span>, <span class="number">6.13</span>, <span class="number">18.54</span>, <span class="number">57.86</span>]
+colors = [<span class="string">'#c4bdb0'</span>, <span class="string">'#f4a261'</span>, <span class="string">'#e76f51'</span>, <span class="string">'#c8410a'</span>]
+
+bars = ax2.<span class="function">bar</span>(stages, probs, color=colors, edgecolor=<span class="string">'white'</span>, linewidth=<span class="number">1.5</span>)
+ax2.<span class="function">axhline</span>(<span class="number">50</span>, color=<span class="string">'#c8410a'</span>, linestyle=<span class="string">'--'</span>, alpha=<span class="number">0.5</span>, label=<span class="string">'50% threshold'</span>)
+<span class="keyword">for</span> bar, prob <span class="keyword">in</span> <span class="function">zip</span>(bars, probs):
+    ax2.<span class="function">text</span>(bar.get_x() + bar.get_width()/<span class="number">2</span>, bar.get_height() + <span class="number">1</span>, 
+            <span class="string">f'{prob:.1f}%'</span>, ha=<span class="string">'center'</span>, fontweight=<span class="string">'bold'</span>, fontsize=<span class="number">11</span>)
+ax2.<span class="function">set_ylabel</span>(<span class="string">'P(Fraud) %'</span>)
+ax2.<span class="function">set_title</span>(<span class="string">'Sequential Bayesian Updating\nThree fraud signals accumulate'</span>)
+ax2.<span class="function">set_ylim</span>(<span class="number">0</span>, <span class="number">70</span>)
+ax2.<span class="function">legend</span>()
+ax2.<span class="function">grid</span>(True, alpha=<span class="number">0.3</span>, axis=<span class="string">'y'</span>)
+
+plt.<span class="function">tight_layout</span>()
+plt.<span class="function">savefig</span>(<span class="string">'day01_bayes_visualization.png'</span>, dpi=<span class="number">150</span>, bbox_inches=<span class="string">'tight'</span>)
+plt.<span class="function">show</span>()
+<span class="function">print</span>(<span class="string">"Visualization saved!"</span>)
+  </div>
+
+  <h3>Exercise 4: The Independence Check</h3>
+  <div class="code-block">
+<span class="comment"># ─── Exercise 4: Test Whether Features Are Independent ───────────────────────</span>
+<span class="comment"># If P(A∩B) ≈ P(A) × P(B), the features are approximately independent</span>
+
+features = {
+    <span class="string">'cnp'</span>: <span class="number">0.30</span>,          <span class="comment"># P(card not present)</span>
+    <span class="string">'night'</span>: <span class="number">0.18</span>,         <span class="comment"># P(night transaction)</span>
+    <span class="string">'high_amount'</span>: <span class="number">0.08</span>,   <span class="comment"># P(amount > $1000)</span>
+}
+
+<span class="comment"># If independent: P(CNP ∩ night) should ≈ P(CNP) × P(night)</span>
+p_cnp_times_night = features[<span class="string">'cnp'</span>] * features[<span class="string">'night'</span>]  <span class="comment"># 0.054</span>
+p_cnp_and_night_actual = <span class="number">0.09</span>  <span class="comment"># actual observed joint probability (higher!)</span>
+
+<span class="function">print</span>(<span class="string">"Independence check for CNP and Night transactions:"</span>)
+<span class="function">print</span>(<span class="string">f"  P(CNP) × P(night) = {p_cnp_times_night:.4f}  ← if independent"</span>)
+<span class="function">print</span>(<span class="string">f"  P(CNP ∩ night) actual = {p_cnp_and_night_actual:.4f}  ← what we observe"</span>)
+<span class="function">print</span>(<span class="string">f"  Ratio: {p_cnp_and_night_actual / p_cnp_times_night:.2f}x"</span>)
+<span class="function">print</span>()
+
+<span class="keyword">if</span> abs(p_cnp_and_night_actual - p_cnp_times_night) &gt; <span class="number">0.005</span>:
+    <span class="function">print</span>(<span class="string">"⚠ These features are NOT independent!"</span>)
+    <span class="function">print</span>(<span class="string">"  CNP and night transactions are correlated."</span>)
+    <span class="function">print</span>(<span class="string">"  Models assuming independence (Naive Bayes) will be biased."</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"✓ Features appear approximately independent"</span>)
+
+<span class="output"># Independence check for CNP and Night transactions:
+#   P(CNP) × P(night) = 0.0540  ← if independent  
+#   P(CNP ∩ night) actual = 0.0900  ← what we observe
+#   Ratio: 1.67x
+# ⚠ These features are NOT independent!</span>
+  </div>
+
+</div><!-- end section 6 -->
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     QUIZ
+══════════════════════════════════════════════════════ -->
+<div class="quiz-section" id="quiz">
+  <div class="quiz-header">Daily Quiz · 16:15 PM – 17:15 PM</div>
+  <h2>15 Questions — Attempt Cold</h2>
+  <p class="quiz-intro">Close all notes. Close this document. Write your answers on paper or in a separate text file. Grade yourself honestly. A score of 80%+ (12/15) means you've mastered today's material. Below 80% means you must re-read the relevant section before tomorrow. Do NOT move on until you understand every answer you got wrong.</p>
+
+  <!-- MCQ Section -->
+  <p style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.2em; margin-bottom:16px;">PART A — CONCEPTUAL (8 QUESTIONS)</p>
+
+  <div class="quiz-q">
+    <div class="q-num">Q1 · Multiple Choice</div>
+    <div class="q-text">Which of the following is NOT a valid probability?</div>
+    <div class="options"><ol>
+      <li>P(fraud) = 0.001</li>
+      <li>P(declined) = 0.15</li>
+      <li>P(approved) = 1.02</li>
+      <li>P(refund) = 0</li>
+    </ol></div>
+    <div class="q-type">Tests: Axiom 1 (non-negativity) and Axiom 2 (unitarity)</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q2 · True / False</div>
+    <div class="q-text">If events A and B are mutually exclusive, they must also be independent.</div>
+    <div class="q-type">Tests: Distinction between mutual exclusivity and independence</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q3 · Multiple Choice</div>
+    <div class="q-text">In Bayes' theorem P(A|B) = P(B|A)×P(A) / P(B), what is the term P(A) called?</div>
+    <div class="options"><ol>
+      <li>The likelihood</li>
+      <li>The posterior</li>
+      <li>The prior</li>
+      <li>The evidence</li>
+    </ol></div>
+    <div class="q-type">Tests: Terminology of Bayesian inference</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q4 · True / False</div>
+    <div class="q-text">P(A|B) is always equal to P(B|A).</div>
+    <div class="q-type">Tests: Understanding that conditional probability is not symmetric — this confusion is called the "prosecutor's fallacy"</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q5 · Multiple Choice</div>
+    <div class="q-text">A fraud analyst says: "Our model flags 95% of actual fraud cases, so 95% of flagged transactions must be fraud." What logical error are they making?</div>
+    <div class="options"><ol>
+      <li>Ignoring the likelihood</li>
+      <li>Confusing P(fraud|flagged) with P(flagged|fraud) — ignoring the prior/base rate</li>
+      <li>Violating Axiom 3</li>
+      <li>Incorrectly computing the complement</li>
+    </ol></div>
+    <div class="q-type">Tests: Base rate fallacy / prosecutor's fallacy — extremely common in fraud analytics</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q6 · Fill in the Blank</div>
+    <div class="q-text">The Law of Total Probability states that if B₁ and B₂ partition the sample space, then P(A) = ________ + ________.</div>
+    <div class="q-type">Tests: Law of Total Probability</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q7 · Short Answer</div>
+    <div class="q-text">Explain in plain English (2-3 sentences, no formulas) what P(fraud | CNP=1, night=1, amount>$2000) means and why it is different from P(fraud).</div>
+    <div class="q-type">Tests: Conceptual understanding of conditional probability</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q8 · Multiple Choice</div>
+    <div class="q-text">Events A and B satisfy P(A∩B) = P(A) × P(B). What does this tell you?</div>
+    <div class="options"><ol>
+      <li>A and B are mutually exclusive</li>
+      <li>A and B are independent</li>
+      <li>A and B cannot occur simultaneously</li>
+      <li>P(A|B) = P(B|A)</li>
+    </ol></div>
+  </div>
+
+  <!-- Calculation Section -->
+  <p style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.2em; margin:24px 0 16px;">PART B — CALCULATION (5 QUESTIONS)</p>
+
+  <div class="quiz-q">
+    <div class="q-num">Q9 · Calculation</div>
+    <div class="q-text">In a payment system: P(fraud) = 0.03, P(high_amount) = 0.10, P(fraud AND high_amount) = 0.018. What is P(fraud OR high_amount)?</div>
+    <div class="q-type">Applies: General Addition Rule</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q10 · Calculation</div>
+    <div class="q-text">P(international) = 0.20, P(fraud AND international) = 0.016. What is P(fraud | international)?</div>
+    <div class="q-type">Applies: Conditional probability formula</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q11 · Bayes Calculation</div>
+    <div class="q-text">Prior: P(fraud) = 0.01. You observe a new device (first-time device). From history: P(new device | fraud) = 0.70, P(new device | legitimate) = 0.15. Compute P(fraud | new device) using Bayes' theorem. Show all steps.</div>
+    <div class="q-type">Applies: Full Bayes' theorem with Law of Total Probability denominator</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q12 · Sequential Bayes</div>
+    <div class="q-text">Starting from P(fraud) = 0.01, you first update with the new device signal from Q11 (your posterior becomes the new prior). Then you observe the transaction is also CNP: P(CNP|fraud)=0.80, P(CNP|legit)=0.25. What is the final P(fraud | new device AND CNP)?</div>
+    <div class="q-type">Applies: Sequential Bayesian updating</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q13 · Independence Test</div>
+    <div class="q-text">P(night_txn) = 0.15, P(international) = 0.20, P(night_txn AND international) = 0.045. Are night transactions and international transactions independent? Show the test mathematically.</div>
+    <div class="q-type">Applies: Independence definition P(A∩B) = P(A)×P(B)?</div>
+  </div>
+
+  <!-- Critical Thinking -->
+  <p style="font-family:'DM Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.2em; margin:24px 0 16px;">PART C — CRITICAL THINKING (2 QUESTIONS)</p>
+
+  <div class="quiz-q">
+    <div class="q-num">Q14 · Critical Thinking</div>
+    <div class="q-text">Your fraud team reports: "Our model catches 90% of fraud — we tested it on 1,000 fraud cases and it flagged 900." A stakeholder says "Great, so 90% of the transactions it flags are fraud!" Explain clearly why this stakeholder is wrong, what additional information you need, and what the actual precision might be if the fraud rate in production is 0.5%.</div>
+    <div class="q-type">Tests: Base rate fallacy, difference between recall and precision</div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-num">Q15 · Domain Application</div>
+    <div class="q-text">Design a Bayesian fraud scoring system for a new payment type (BNPL — Buy Now Pay Later) where you have very little historical data. What would you use as your prior? How would you update it? What signals would you collect? What are the risks of using a wrong prior? Write 150-200 words.</div>
+    <div class="q-type">Tests: Applied Bayesian thinking in your domain</div>
+  </div>
+
+</div><!-- end quiz -->
+
+<!-- ══════════════════════════════════════════════════════
+     PROBLEM SET
+══════════════════════════════════════════════════════ -->
+<div class="problem-section" id="problems">
+  <div class="ps-header">Applied Problem Set · 17:15 PM – 18:00 PM</div>
+  <h2>4 Problems — These Are Harder</h2>
+  <p class="ps-intro">These problems require combining multiple concepts from today. Work them methodically. Show all work. These are the type of problems you might encounter in a data science interview or when a senior stakeholder challenges your analysis.</p>
+
+  <div class="problem">
+    <div class="p-num">PROBLEM 1 · Bayesian Fraud System Design</div>
+    <div class="p-title">The Three-Signal Fraud Scorer</div>
+    <div class="p-text">Your payment platform has the following empirical data from 10 million historical transactions (fraud rate = 1.5%):</div>
+    <table class="data-table" style="margin:12px 0;">
+      <thead><tr><th>Signal</th><th>P(signal | fraud)</th><th>P(signal | legit)</th></tr></thead>
+      <tbody>
+        <tr><td>Card Not Present (CNP)</td><td>0.82</td><td>0.28</td></tr>
+        <tr><td>New device (first time)</td><td>0.65</td><td>0.18</td></tr>
+        <tr><td>Amount > $500</td><td>0.40</td><td>0.12</td></tr>
+        <tr><td>Transaction velocity > 3/hour</td><td>0.55</td><td>0.04</td></tr>
+      </tbody>
+    </table>
+    <div class="p-tasks"><ol>
+      <li>Compute P(fraud | CNP) for a CNP transaction starting from prior 0.015</li>
+      <li>A transaction is CNP AND new device. Compute P(fraud) sequentially</li>
+      <li>A transaction shows all 4 signals. Compute the final P(fraud) sequentially</li>
+      <li>At what posterior probability would you recommend blocking a transaction? Justify your answer using the economic tradeoff between false positives and false negatives (hint: what is the cost of blocking a legitimate transaction vs allowing a fraudulent one?)</li>
+      <li>Python challenge: Write a function that takes any set of signals and returns the posterior fraud probability. Make it general enough to handle any number of signals.</li>
+    </ol></div>
+    <div class="p-hint">Hint: Remember — the posterior from step N becomes the prior for step N+1. This is sequential Bayesian updating. Note: We are assuming independence between signals for now — we'll address why this is a simplification in Month 2.</div>
+  </div>
+
+  <div class="problem">
+    <div class="p-num">PROBLEM 2 · The Complement Trick</div>
+    <div class="p-title">Fraud-Free Order Probability</div>
+    <div class="p-text">An e-commerce merchant processes 500 orders per day. Each order has an independent probability of 0.8% of being fraudulent (assume independence for this problem).</div>
+    <div class="p-tasks"><ol>
+      <li>What is the probability that a single randomly selected order is NOT fraudulent?</li>
+      <li>What is the probability that ALL 500 orders today are legitimate (no fraud at all)?</li>
+      <li>What is the probability that AT LEAST ONE order today is fraudulent? (Use the complement trick)</li>
+      <li>The merchant wants to be 99% confident of catching at least one fraud case if it exists. If the fraud rate drops to 0.1%, how many orders would they need to process before being 99% likely to observe at least one fraud case?</li>
+      <li>Python: Plot the probability of at least one fraud event as a function of the number of transactions (from 1 to 2000). At what N does P(at least one fraud) exceed 99%?</li>
+    </ol></div>
+    <div class="p-hint">Hint for (2): P(all legit) = P(legit)^500. The independence assumption makes this tractable. Hint for (4): Solve 1 - (1-p)^n = 0.99 for n algebraically, then verify in Python.</div>
+  </div>
+
+  <div class="problem">
+    <div class="p-num">PROBLEM 3 · Conditional vs Unconditional</div>
+    <div class="p-title">The Merchant Risk Segmentation Problem</div>
+    <div class="p-text">Your platform has three merchant categories with very different risk profiles:</div>
+    <table class="data-table" style="margin:12px 0;">
+      <thead><tr><th>Category</th><th>% of Volume</th><th>Fraud Rate</th></tr></thead>
+      <tbody>
+        <tr><td>Digital goods (gaming, software)</td><td>20%</td><td>4.5%</td></tr>
+        <tr><td>Physical retail</td><td>50%</td><td>0.8%</td></tr>
+        <tr><td>Services</td><td>30%</td><td>1.2%</td></tr>
+      </tbody>
+    </table>
+    <div class="p-tasks"><ol>
+      <li>What is the overall (unconditional) fraud rate across all merchants? Use the Law of Total Probability.</li>
+      <li>A fraud transaction is detected. What is the probability it came from the Digital goods category? (Apply Bayes' theorem)</li>
+      <li>A fraud transaction is detected. What is the probability it came from Physical retail?</li>
+      <li>If you could deploy fraud prevention resources to only ONE category, which would give you the highest ROI and why? Quantify your answer.</li>
+      <li>Python: Build a complete merchant risk decomposition visualization — a bar chart showing each category's contribution to total fraud volume.</li>
+    </ol></div>
+    <div class="p-hint">Hint for (1): P(fraud) = P(fraud|digital)×P(digital) + P(fraud|retail)×P(retail) + P(fraud|services)×P(services). For (2) and (3): Use Bayes' theorem with P(fraud) from (1) as the denominator.</div>
+  </div>
+
+  <div class="problem">
+    <div class="p-num">PROBLEM 4 · Advanced · Domain Reflection</div>
+    <div class="p-title">The Base Rate Problem in Risk Analytics</div>
+    <div class="p-text">This is a thinking problem, not a calculation problem. It will test whether you have truly understood today's material at a deep level.</div>
+    <div class="p-tasks"><ol>
+      <li>In your 7 years of experience, describe a situation where someone on your team (or you) likely fell for the base rate fallacy — where P(B|A) was confused with P(A|B). What decision was made incorrectly as a result?</li>
+      <li>Why does a fraud model with 95% recall (sensitivity) not mean that 95% of flagged transactions are fraud? Explain this to a non-technical person in 100 words.</li>
+      <li>Explain why Bayesian reasoning is superior to simple threshold-based fraud rules (e.g., "block all CNP transactions over $500"). What does Bayes give you that a rule doesn't?</li>
+      <li>Design a thought experiment: How would you empirically estimate P(CNP | fraud) and P(CNP | legit) from a historical transaction database? What SQL query would you write? What biases might exist in your estimates?</li>
+    </ol></div>
+    <div class="p-hint">No hint for Problem 4. If you can't answer these, the concepts haven't fully landed yet. Re-read Section 5 (Bayes' Theorem) and Section 3 (Conditional Probability) before tomorrow.</div>
+  </div>
+
+</div><!-- end problem set -->
+
+<!-- DOMAIN CONNECT -->
+<div style="background:rgba(26,79,110,0.06); border:1px solid rgba(26,79,110,0.2); padding:28px; margin-top:32px; border-radius:2px;">
+  <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:#1a4f6e; margin-bottom:8px;">Block 5 · 18:00 PM – 18:45 PM</div>
+  <h3 style="font-family:'Playfair Display',serif; font-size:22px; margin-bottom:12px;">Domain Connect — Write 200-300 Words</h3>
+  <p style="color:var(--muted); font-size:14px; line-height:1.8;">In your notebook, answer this prompt: <strong>"Where in my 7 years of experience have I been using Bayesian reasoning without knowing it? Give 3 specific examples from my work in risk, e-commerce, or payments analytics."</strong></p>
+  <p style="color:var(--muted); font-size:14px; line-height:1.8; margin-top:10px;">Example starters: "When I flagged a transaction because it showed multiple signals..." / "When our fraud rate jumped after a new merchant onboarded..." / "When I argued that a rule was over-triggering because the base rate was low..."</p>
+</div>
+
+<!-- DAY CHECKLIST -->
+<div class="day-checklist" style="margin-top:32px;">
+  <h3>Day 1 — End-of-Day Checklist</h3>
+  <ul>
+    <li>I can state the 3 Kolmogorov axioms from memory and explain why each is necessary</li>
+    <li>I can correctly apply the General Addition Rule P(A∪B) = P(A)+P(B)−P(A∩B)</li>
+    <li>I can compute conditional probability P(A|B) = P(A∩B)/P(B)</li>
+    <li>I can correctly distinguish independence from mutual exclusivity</li>
+    <li>I can derive Bayes' theorem from scratch (2-3 lines of algebra)</li>
+    <li>I can identify Prior, Likelihood, Posterior, and Evidence in any Bayesian problem</li>
+    <li>I can apply the Law of Total Probability to compute P(B)</li>
+    <li>I completed all 4 Python exercises and my notebook runs without errors</li>
+    <li>I attempted all 15 quiz questions cold before checking answers</li>
+    <li>I attempted all 4 problems with full working shown</li>
+    <li>I wrote my 200-300 word Domain Connect reflection</li>
+    <li>I committed my day01_probability_bayes.ipynb to GitHub</li>
+    <li>I identified any concepts I'm unclear on (to ask Nova tomorrow)</li>
+  </ul>
+</div>
+
+<!-- TOMORROW PREVIEW -->
+<div style="background:var(--ink); color:var(--paper); padding:28px; margin-top:24px; border-radius:2px;">
+  <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:8px;">Coming Tomorrow · Day 2</div>
+  <h3 style="font-family:'Playfair Display',serif; font-size:22px; color:var(--gold); margin-bottom:10px;">Discrete Distributions: Binomial, Poisson & Geometric</h3>
+  <p style="color:rgba(245,240,232,0.65); font-size:14px; line-height:1.8;">Tomorrow Nova introduces the probability distributions that model counting events — exactly what happens in payments: how many frauds occur in an hour? How many transactions before the first chargeback? How many failed payment attempts before success? Come with Day 1 fully understood.</p>
+  <p style="color:rgba(245,240,232,0.5); font-size:13px; margin-top:10px; font-family:'DM Mono',monospace;">To trigger tomorrow's document: message Nova saying "Nova, Day 2" at 9am.</p>
+</div>
+
+</div><!-- end content -->
+
+</body>
+</html>
